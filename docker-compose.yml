@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kit_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: kit_admin
+      POSTGRES_PASSWORD: kit_secure_production_password_2025
+      POSTGRES_DB: kit_helping_hand
+    ports:
+      - "5432:5432"
+    volumes:
+      - kit_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kit_admin -d kit_helping_hand"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: kit_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://kit_admin:kit_secure_production_password_2025@postgres:5432/kit_helping_hand?schema=public"
+      JWT_SECRET: "kit_super_secret_jwt_encryption_key_change_for_production"
+      JWT_EXPIRES_IN: "7d"
+      STORAGE_DIR: "/app/storage_vault"
+      MAX_FILE_SIZE_MB: 25
+      CORS_ORIGIN: "http://localhost:3000"
+      INITIAL_ADMIN_EMAIL: "admin@kit.edu.pk"
+      INITIAL_ADMIN_PASSWORD: "AdminKit@2025!"
+      INITIAL_ADMIN_NAME: "KIT System Administrator"
+    ports:
+      - "5000:5000"
+    volumes:
+      - kit_vault_data:/app/storage_vault
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: kit_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  kit_pgdata:
+  kit_vault_data:

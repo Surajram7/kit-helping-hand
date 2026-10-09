@@ -1,0 +1,278 @@
+// Prisma Schema for KIT Helping Hand — Khanpur Institute of Technology Academic Resource Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User & Role System
+model User {
+  id             String    @id @default(uuid())
+  fullName       String
+  email          String    @unique
+  passwordHash   String
+  studentId      String?   // Roll number or student registration ID
+  role           String    @default("STUDENT") // STUDENT, CONTENT_MANAGER, ADMIN, SUPER_ADMIN
+  isActive       Boolean   @default(true)
+  
+  // Academic association
+  academicProgramId        String?
+  academicProgram          AcademicProgram?       @relation(fields: [academicProgramId], references: [id], onDelete: SetNull)
+  batchId                  String?
+  batch                    Batch?                 @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  semesterId               String?
+  semester                 Semester?              @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+  universityAffiliationId  String?
+  universityAffiliation    UniversityAffiliation? @relation(fields: [universityAffiliationId], references: [id], onDelete: SetNull)
+
+  // User activity & contributions
+  uploadedResources  Resource[]       @relation("UserUploadedResources")
+  studentRequests    StudentRequest[] @relation("StudentRequests")
+  requestComments    RequestComment[]
+  auditLogs          AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+// Academic Program (e.g. BS Computer Science, BS Information Technology)
+model AcademicProgram {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  code        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+
+  batches     Batch[]
+  subjects    Subject[]
+  resources   Resource[]
+  users       User[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Admission Batch (e.g. F24, Fall 2024, Spring 2023)
+model Batch {
+  id                String           @id @default(uuid())
+  name              String           // e.g. "Fall 2024 (F24)"
+  code              String           // e.g. "F24"
+  academicProgramId String?
+  academicProgram   AcademicProgram? @relation(fields: [academicProgramId], references: [id], onDelete: SetNull)
+  isActive          Boolean          @default(true)
+
+  resources         Resource[]
+  users             User[]
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@unique([name, academicProgramId])
+}
+
+// Semester (e.g. Semester 1, Semester 2... 1st to 8th)
+model Semester {
+  id             String    @id @default(uuid())
+  name           String    @unique // e.g. "Semester 1", "Semester 2"
+  semesterNumber Int       @unique // 1, 2, 3...
+  isActive       Boolean   @default(true)
+
+  subjects       Subject[]
+  resources      Resource[]
+  studentRequests StudentRequest[]
+  users          User[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// University Affiliation or Examination Authority (e.g. PU, UET, etc.)
+model UniversityAffiliation {
+  id          String    @id @default(uuid())
+  name        String    @unique // e.g. "University of the Punjab (PU)"
+  shortCode   String    @unique // e.g. "PU"
+  description String?
+  isActive    Boolean   @default(true)
+
+  resources       Resource[]
+  studentRequests StudentRequest[]
+  users           User[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Academic Subject
+model Subject {
+  id                String          @id @default(uuid())
+  name              String          // e.g. "Programming Fundamentals"
+  code              String          // e.g. "CS-101"
+  academicProgramId String
+  academicProgram   AcademicProgram @relation(fields: [academicProgramId], references: [id], onDelete: Cascade)
+  semesterId        String
+  semester          Semester        @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+  description       String?
+  isActive          Boolean         @default(true)
+
+  resources         Resource[]
+  studentRequests   StudentRequest[]
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([code, academicProgramId])
+  @@index([semesterId])
+  @@index([academicProgramId])
+}
+
+// Core Academic Resource (Lecture notes, Handouts, Past Papers, Mock exams, etc.)
+model Resource {
+  id                      String                 @id @default(uuid())
+  title                   String
+  description             String?
+  resourceType            String                 // LECTURE_NOTE, LECTURE_PDF, HANDOUT, ASSIGNMENT, MIDTERM_PAPER, FINAL_TERM_PAPER, MOCK_EXAM, PREVIOUS_EXAM, OTHER
+  
+  // Organization links
+  academicProgramId       String?
+  academicProgram         AcademicProgram?       @relation(fields: [academicProgramId], references: [id], onDelete: SetNull)
+  batchId                 String?
+  batch                   Batch?                 @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  semesterId              String?
+  semester                Semester?              @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+  subjectId               String?
+  subject                 Subject?               @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  universityAffiliationId String?
+  universityAffiliation   UniversityAffiliation? @relation(fields: [universityAffiliationId], references: [id], onDelete: SetNull)
+  
+  // Lecture / Topic details
+  lectureNumber           String?                // e.g. "Lecture 03"
+  topic                   String?
+
+  // Examination Paper specific fields
+  examType                String?                // MIDTERM, FINAL_TERM, MOCK, PREVIOUS_EXAM, ELADE
+  examYear                Int?                   // 2022, 2023, 2024
+  examSession             String?                // Spring, Fall, Annual, Supplementary
+  isSolved                Boolean                @default(false) // Solved or Unsolved paper
+  hasSolutionFile         Boolean                @default(false)
+
+  // Status & Tracking
+  isPublished             Boolean                @default(true)
+  isArchived              Boolean                @default(false)
+  downloadCount           Int                    @default(0)
+  viewCount               Int                    @default(0)
+
+  uploadedById            String
+  uploadedBy              User                   @relation("UserUploadedResources", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  files                   ResourceFile[]
+
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  @@index([resourceType])
+  @@index([subjectId])
+  @@index([semesterId])
+  @@index([universityAffiliationId])
+  @@index([isSolved])
+  @@index([isPublished])
+}
+
+// File Storage Metadata linked to private storage
+model ResourceFile {
+  id          String   @id @default(uuid())
+  resourceId  String
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  fileName    String   // Original human-readable filename
+  storageKey  String   // Server safe unique storage path / key
+  fileSize    Int      // Size in bytes
+  mimeType    String   // e.g. "application/pdf"
+  fileRole    String   @default("MAIN") // MAIN, SOLUTION, SUPPLEMENTARY
+
+  createdAt   DateTime @default(now())
+
+  @@index([resourceId])
+}
+
+// Student Requests and Feedback
+model StudentRequest {
+  id                      String                 @id @default(uuid())
+  studentId               String
+  student                 User                   @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
+  
+  title                   String
+  category                String                 // LECTURE_NOTE, PAST_PAPER, RESOURCE_CATEGORY_SUGGESTION, FILE_ISSUE_REPORT, GENERAL_FEEDBACK
+  description             String
+  
+  semesterId              String?
+  semester                Semester?              @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+  subjectId               String?
+  subject                 Subject?               @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  universityAffiliationId String?
+  universityAffiliation   UniversityAffiliation? @relation(fields: [universityAffiliationId], references: [id], onDelete: SetNull)
+  
+  status                  String                 @default("SUBMITTED") // SUBMITTED, UNDER_REVIEW, IN_PROGRESS, COMPLETED, DECLINED
+  adminResponse           String?
+
+  comments                RequestComment[]
+
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  @@index([studentId])
+  @@index([status])
+}
+
+// Comments on Student Requests
+model RequestComment {
+  id         String         @id @default(uuid())
+  requestId  String
+  request    StudentRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment    String
+  createdAt  DateTime       @default(now())
+
+  @@index([requestId])
+}
+
+// Administrative Audit Trail
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userEmail  String
+  action     String   // RESOURCE_UPLOAD, RESOURCE_EDIT, RESOURCE_DELETE, USER_STATUS_CHANGE, ROLE_CHANGE, SETTINGS_UPDATE, etc.
+  recordType String   // Resource, User, Subject, PlatformSettings, etc.
+  recordId   String?
+  details    String?  // JSON formatted details
+  ipAddress  String?
+
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([recordType])
+  @@index([createdAt])
+}
+
+// Platform Configurable Settings (Dynamic Branding & Policies)
+model PlatformSettings {
+  id                 String   @id @default("default")
+  platformName       String   @default("KIT Helping Hand")
+  tagline            String   @default("Your Academic Resources, All in One Place.")
+  institutionName    String   @default("Khanpur Institute of Technology")
+  logoUrl            String?
+  contactEmail       String?
+  maintenanceMode    Boolean  @default(false)
+  maintenanceNotice  String?
+  allowedFileTypes   String   @default("pdf,docx,pptx,zip")
+  maxFileSizeMb      Int      @default(25)
+
+  updatedAt          DateTime @updatedAt
+}

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production build artifacts
+dist/
+*/dist/
+
+# Environment variables
+.env
+*/.env
+*.local
+
+# Database & Vault files
+*.db
+*.db-journal
+dev.db
+server/dev.db
+storage_vault/
+server/storage_vault/
+*.dump
+
+# Logs & temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.system_generated/
