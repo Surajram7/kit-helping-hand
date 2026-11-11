@@ -2,8 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SettingsProvider } from './contexts/SettingsContext';
-import { Navbar } from './components/Navbar';
-import { Footer } from './components/Footer';
+import { AppLayout } from './components/AppLayout';
 
 // Pages
 import { LandingPage } from './pages/LandingPage';
@@ -28,7 +27,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; staffOnly?: boolean 
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center space-y-2">
-          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-10 h-10 border-4 border-[#0b2a4a] border-t-[#cd7f32] rounded-full animate-spin mx-auto" />
           <p className="text-xs text-slate-500 font-medium">Verifying institutional credentials...</p>
         </div>
       </div>
@@ -51,53 +50,104 @@ export const App: React.FC = () => {
     <BrowserRouter>
       <AuthProvider>
         <SettingsProvider>
-          <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-navy-900 selection:text-white">
-            <Navbar />
-            <main className="flex-1">
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/resources" element={<ResourcesPage />} />
-                <Route path="/past-papers" element={<PastPapersPage />} />
-                <Route path="/requests" element={<RequestsPage />} />
-                <Route path="/about" element={<AboutPage />} />
+          <Routes>
+            {/* Public Pages with KIT CMS Layout */}
+            <Route
+              path="/"
+              element={
+                <AppLayout>
+                  <LandingPage />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/resources"
+              element={
+                <AppLayout>
+                  <ResourcesPage />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/past-papers"
+              element={
+                <AppLayout>
+                  <PastPapersPage />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/requests"
+              element={
+                <AppLayout>
+                  <RequestsPage />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <AppLayout>
+                  <AboutPage />
+                </AppLayout>
+              }
+            />
 
-                {/* Authenticated Student Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
+            {/* Authentication Pages (Clean Standalone Portal View) */}
+            <Route
+              path="/login"
+              element={
+                <AppLayout showSidebar={false}>
+                  <LoginPage />
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <AppLayout showSidebar={false}>
+                  <RegisterPage />
+                </AppLayout>
+              }
+            />
 
-                {/* Administrative Staff Routes */}
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute staffOnly>
-                      <AdminPage />
-                    </ProtectedRoute>
-                  }
-                />
+            {/* Authenticated Student Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <DashboardPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ProfilePage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
 
-                {/* Catch-all */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+            {/* Administrative Staff Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute staffOnly>
+                  <AppLayout>
+                    <AdminPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </SettingsProvider>
       </AuthProvider>
     </BrowserRouter>

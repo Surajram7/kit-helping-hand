@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User as UserIcon, Mail, Lock, AlertCircle, ArrowRight, BookOpen, GraduationCap } from 'lucide-react';
+import { User as UserIcon, Mail, Lock, AlertCircle, ArrowRight, GraduationCap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { api } from '../services/api';
@@ -30,7 +30,6 @@ export const RegisterPage: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingHierarchy, setIsLoadingHierarchy] = useState(true);
 
   useEffect(() => {
     const fetchHierarchy = async () => {
@@ -41,14 +40,11 @@ export const RegisterPage: React.FC = () => {
         setAffiliations(res.affiliations || []);
       } catch (err) {
         console.error('Failed to load academic options', err);
-      } finally {
-        setIsLoadingHierarchy(false);
       }
     };
     fetchHierarchy();
   }, []);
 
-  // Update batch choices when selected program changes
   useEffect(() => {
     if (formData.academicProgramId) {
       const selectedProg = programs.find((p) => p.id === formData.academicProgramId);
@@ -97,22 +93,26 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
-      <div className="max-w-xl w-full bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+    <div className="py-8 px-4 flex items-center justify-center">
+      <div className="max-w-xl w-full bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm space-y-6">
         <div className="text-center">
-          <div className="mx-auto w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-sm mb-3">
-            KIT
+          <div className="mx-auto w-16 h-16 rounded-full bg-white p-1 flex items-center justify-center shadow-md border-2 border-slate-200 mb-3 overflow-hidden">
+            <img
+              src="/kit-logo.png"
+              alt="Khanpur Institute of Technology"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Create Student Account
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#0b2a4a] tracking-tight">
+            Student Account Registration
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Register once to access lecture notes, PDFs, and university past papers
+          <p className="text-xs text-slate-500 mt-0.5">
+            Register once to access lecture notes, course materials, and university past papers
           </p>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -120,9 +120,9 @@ export const RegisterPage: React.FC = () => {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Full Name & Email */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Full Name *
               </label>
               <input
@@ -131,12 +131,12 @@ export const RegisterPage: React.FC = () => {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                placeholder="Muhammad Ali"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="Student Name"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Student Email *
               </label>
               <input
@@ -145,38 +145,38 @@ export const RegisterPage: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="ali@kit.edu.pk"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="name@kit.edu.pk"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               />
             </div>
           </div>
 
           {/* Student ID / Roll Number */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Student ID / Roll Number
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Roll Number / Student ID
             </label>
             <input
               type="text"
               name="studentId"
               value={formData.studentId}
               onChange={handleChange}
-              placeholder="e.g. KIT-BSCS-F24-019"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              placeholder="e.g. KIT-BSCS-F24-001"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
             />
           </div>
 
           {/* Academic Hierarchy Associations */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Academic Program
               </label>
               <select
                 name="academicProgramId"
                 value={formData.academicProgramId}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               >
                 <option value="">Select Academic Program</option>
                 {programs.map((p) => (
@@ -188,7 +188,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Admission Batch
               </label>
               <select
@@ -196,7 +196,7 @@ export const RegisterPage: React.FC = () => {
                 value={formData.batchId}
                 onChange={handleChange}
                 disabled={!formData.academicProgramId || batches.length === 0}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white disabled:opacity-50"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white disabled:opacity-50"
               >
                 <option value="">
                   {batches.length === 0 ? 'Select Program First' : 'Select Batch'}
@@ -210,16 +210,16 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Current Semester
               </label>
               <select
                 name="semesterId"
                 value={formData.semesterId}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               >
-                <option value="">Select Current Semester</option>
+                <option value="">Select Semester</option>
                 {semesters.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
@@ -229,16 +229,16 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 University Affiliation
               </label>
               <select
                 name="universityAffiliationId"
                 value={formData.universityAffiliationId}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               >
-                <option value="">Select University Affiliation</option>
+                <option value="">Select Affiliation</option>
                 {affiliations.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name} ({a.shortCode})
@@ -248,10 +248,10 @@ export const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Password & Confirm */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          {/* Password Fields */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Password *
               </label>
               <input
@@ -261,11 +261,11 @@ export const RegisterPage: React.FC = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="At least 6 characters"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Confirm Password *
               </label>
               <input
@@ -275,7 +275,7 @@ export const RegisterPage: React.FC = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Re-enter password"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-[#cd7f32] focus:border-[#cd7f32] focus:bg-white"
               />
             </div>
           </div>
@@ -283,15 +283,15 @@ export const RegisterPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 disabled:opacity-50 transition-colors mt-2"
+            className="w-full py-2.5 px-4 rounded-lg text-xs sm:text-sm font-bold text-white bg-[#cd7f32] hover:bg-[#ba6a25] transition-colors shadow-sm disabled:opacity-50 mt-2"
           >
-            {isSubmitting ? <span>Creating Account...</span> : <span>Complete Registration</span>}
+            {isSubmitting ? 'Creating Account...' : 'Complete Registration'}
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-600">
+        <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-500">
           <span>Already registered? </span>
-          <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-500">
+          <Link to="/login" className="font-bold text-[#cd7f32] hover:text-[#ba6a25]">
             Sign in to your account
           </Link>
         </div>

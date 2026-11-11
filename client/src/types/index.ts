@@ -176,6 +176,7 @@ export interface PlatformSettings {
 
 export interface DashboardStats {
   totalStudents: number;
+  totalContentManagers?: number;
   totalPublishedResources: number;
   totalFiles: number;
   totalBatches: number;

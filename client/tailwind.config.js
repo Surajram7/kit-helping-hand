@@ -5,45 +5,32 @@ export default {
     extend: {
       colors: {
         navy: {
-          50: '#f0f4f8',
-          100: '#d9e2ec',
-          200: '#bcccdc',
-          300: '#9fb3c8',
-          400: '#829ab1',
-          500: '#627d98',
-          600: '#486581',
-          700: '#334e68',
-          800: '#243b53',
-          900: '#102a43',
-          950: '#0b1d30',
+          900: '#061a30', // KIT CMS primary dark
+          800: '#0b2a4a', // KIT CMS header / cards
+          700: '#123a63', // KIT CMS active link / subheader
+          600: '#1a4b7d', // KIT CMS hover
+          500: '#235e9c',
+          400: '#3c79be',
+          300: '#72a0db',
+          200: '#b2ccf0',
+          100: '#e1ecf9',
+          50: '#f0f5fb',
         },
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#1d4ed8', // Refined academic royal navy/blue
-          600: '#1e40af',
-          700: '#1d3557',
-          800: '#14253d',
-          900: '#0c1626',
-        },
-        accent: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#0d9488', // Subdued teal accent
-          600: '#0f766e',
-          700: '#115e59',
-          800: '#134e4a',
-          900: '#134e4a',
+        bronze: {
+          50: '#fdf8f4',
+          100: '#f9eee4',
+          200: '#f2dbc7',
+          300: '#e8c1a1',
+          400: '#dba175',
+          500: '#cd7f32', // Signature KIT CMS bronze accent
+          600: '#ba6a25',
+          700: '#9d531d',
+          800: '#7f431c',
+          900: '#68391a',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Segoe UI', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Roboto', 'sans-serif'],
       },
     },
   },

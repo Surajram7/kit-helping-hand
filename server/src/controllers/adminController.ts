@@ -7,6 +7,7 @@ export const getDashboardStats = async (req: AuthenticatedRequest, res: Response
   try {
     const [
       totalStudents,
+      totalContentManagers,
       totalPublishedResources,
       totalFiles,
       totalBatches,
@@ -19,6 +20,7 @@ export const getDashboardStats = async (req: AuthenticatedRequest, res: Response
       recentResources,
     ] = await Promise.all([
       prisma.user.count({ where: { role: 'STUDENT' } }),
+      prisma.user.count({ where: { role: 'CONTENT_MANAGER' } }),
       prisma.resource.count({ where: { isPublished: true, isArchived: false } }),
       prisma.resourceFile.count(),
       prisma.batch.count({ where: { isActive: true } }),
@@ -63,6 +65,7 @@ export const getDashboardStats = async (req: AuthenticatedRequest, res: Response
 
     res.json({
       totalStudents,
+      totalContentManagers,
       totalPublishedResources,
       totalFiles,
       totalBatches,

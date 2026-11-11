@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Download, ZoomIn, ZoomOut, Maximize2, Minimize2, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, Download, ZoomIn, ZoomOut, Maximize2, Minimize2, FileText, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Resource, ResourceFile } from '../types';
 import { api } from '../services/api';
 import { Badge } from './Badge';
@@ -121,10 +121,20 @@ export const PDFViewerModal: React.FC<PDFViewerModalProps> = ({
               <span className="hidden sm:inline">Download</span>
             </a>
 
-            {/* Close Button */}
+            {/* Back / Close Buttons */}
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors ml-1"
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-semibold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors ml-1 cursor-pointer"
+              title="Back to Document Vault"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <button
+              onClick={onClose}
+              type="button"
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
               title="Close Viewer"
             >
               <X className="w-5 h-5" />

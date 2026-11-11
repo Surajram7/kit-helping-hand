@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   isStaff: boolean;
+  isContentManager: boolean;
   isAdmin: boolean;
   isSuperAdmin: boolean;
   login: (credentials: { email: string; password: string }) => Promise<void>;
@@ -65,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const isContentManager = user?.role === 'CONTENT_MANAGER';
   const isStaff = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN' || user?.role === 'CONTENT_MANAGER';
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
   const isSuperAdmin = user?.role === 'SUPER_ADMIN';
@@ -77,6 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         isLoading,
         isStaff,
+        isContentManager,
         isAdmin,
         isSuperAdmin,
         login,

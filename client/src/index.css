@@ -3,23 +3,161 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --navy-900: #061a30;
+    --navy-800: #0b2a4a;
+    --navy-700: #123a63;
+    --navy-600: #1a4b7d;
+    --bronze: #cd7f32;
+    --white: #ffffff;
+    --text-light: #e8f1ff;
+  }
+
   body {
-    @apply antialiased text-slate-800 bg-slate-50;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    @apply antialiased text-slate-800 bg-white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
   }
 }
 
+/* KIT Helping Hand Layout Wrapper & Main */
+.layout-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  position: relative;
+}
+
+.layout-main {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+  background: #ffffff;
+  transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.layout-main.with-sidebar {
+  margin-left: 260px;
+}
+
+.layout-main.collapsed-sidebar {
+  margin-left: 0;
+}
+
+@media (max-width: 1023px) {
+  .layout-main,
+  .layout-main.with-sidebar,
+  .layout-main.collapsed-sidebar {
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+}
+
+/* KIT CMS Sidebar Custom Scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* KIT CMS Dashboard Identity Panel */
+.dashboard-identity-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(280px, 1.1fr) minmax(320px, 1fr);
+  gap: 28px;
+  padding: 30px;
+  border: 1px solid rgba(11, 42, 74, 0.15);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 88% 15%, rgba(205, 127, 50, 0.16), transparent 28%),
+    linear-gradient(128deg, #061a30 0%, #0b2a4a 54%, #123a63 100%);
+  color: #fff;
+  box-shadow: 0 16px 36px rgba(6, 26, 48, 0.18);
+}
+
+.dashboard-identity-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.16;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(90deg, transparent 10%, #000 100%);
+}
+
+.dashboard-tech-orbit {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: dashboard-orbit 14s ease-in-out infinite alternate;
+}
+
+.dashboard-tech-orbit::before {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #cd7f32;
+  box-shadow: 0 0 16px rgba(205, 127, 50, 0.9);
+}
+
+.dashboard-tech-orbit.orbit-one {
+  width: 240px;
+  height: 240px;
+  right: -60px;
+  top: -80px;
+}
+.dashboard-tech-orbit.orbit-one::before {
+  left: 30px;
+  bottom: 40px;
+}
+
+.dashboard-tech-orbit.orbit-two {
+  width: 140px;
+  height: 140px;
+  right: 28%;
+  bottom: -60px;
+  animation-delay: -5s;
+}
+.dashboard-tech-orbit.orbit-two::before {
+  right: 12px;
+  top: 48px;
+}
+
+@keyframes dashboard-orbit {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.55; }
+  to { transform: translate3d(-12px, 8px, 0) rotate(16deg); opacity: 0.95; }
+}
+
+@media (max-width: 991px) {
+  .dashboard-identity-panel {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 22px;
+  }
+}
+
+/* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.15s ease-out forwards;
+  animation: fadeIn 0.18s ease-out forwards;
 }

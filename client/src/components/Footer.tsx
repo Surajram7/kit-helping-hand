@@ -13,15 +13,19 @@ export const Footer: React.FC = () => {
           {/* Col 1: Institutional Identity */}
           <div className="space-y-4 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-base shadow-sm">
-                KIT
+              <div className="w-10 h-10 rounded-full bg-white p-0.5 flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+                <img
+                  src="/kit-logo.png"
+                  alt="Khanpur Institute of Technology"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <span className="font-bold text-base text-white tracking-tight">
-                  {settings.platformName}
+                  {settings.platformName || 'KIT Helping Hand'}
                 </span>
                 <p className="text-[11px] text-slate-300">
-                  {settings.institutionName}
+                  {settings.institutionName || 'Khanpur Institute of Technology'}
                 </p>
               </div>
             </div>

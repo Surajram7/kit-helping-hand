@@ -297,6 +297,20 @@ export const updateResource = async (req: AuthenticatedRequest, res: Response): 
       isArchived,
     } = req.body;
 
+    const existing = await prisma.resource.findUnique({ where: { id } });
+    if (!existing) {
+      res.status(404).json({ error: 'Resource not found.' });
+      return;
+    }
+
+    // Role check: Content Managers (CR/GR) can only update materials they uploaded
+    if (req.user?.role === 'CONTENT_MANAGER' && existing.uploadedById !== req.user.id) {
+      res.status(403).json({
+        error: 'Access denied. Content Managers (CR/GR) can only edit materials they uploaded.',
+      });
+      return;
+    }
+
     const resource = await prisma.resource.update({
       where: { id },
       data: {
@@ -354,6 +368,15 @@ export const deleteResource = async (req: AuthenticatedRequest, res: Response): 
 
     if (!resource) {
       res.status(404).json({ error: 'Resource not found.' });
+      return;
+    }
+
+    // Role check: If CONTENT_MANAGER (CR/GR), they can only delete materials they uploaded themselves!
+    // Super Admins & Admins can delete any material in the institute repository.
+    if (req.user?.role === 'CONTENT_MANAGER' && resource.uploadedById !== req.user.id) {
+      res.status(403).json({
+        error: 'Access denied. Content Managers (CR/GR) can only delete materials they uploaded. Super Admins can delete any material.',
+      });
       return;
     }
 
