@@ -33,6 +33,13 @@ To solve this, I designed and built KIT Helping Hand — a production-grade inst
 💡 Why this project matters:
 This isn't just a static template; it's a fully normalized, secure, and production-tested university solution designed to be presented to institutional leadership and scaled across academic departments.
 
+🔗 Public Links & Verification:
+🌐 Live Web Application: [Your Deployed Live URL, e.g. https://kit-helping-hand.onrender.com]
+📂 GitHub Repository: [Your GitHub Repo URL, e.g. https://github.com/your-username/kit-helping-hand]
+🏢 Project Category: Full Stack Web Application / Institutional EdTech Platform
+
+✨ "Explore KIT Helping Hand and experience the platform yourself!"
+
 Check out the screenshots below to explore the interface, architecture, and workflow! 📸👇
 
 #FullStackDevelopment #WebDevelopment #ReactJS #NodeJS #TypeScript #Prisma #PostgreSQL #TailwindCSS #EdTech #SoftwareEngineering #KIT #PakistanTech #PortfolioProject #CleanCode
