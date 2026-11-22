@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: kit-helping-hand
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: STORAGE_DIR
+        value: ./storage_vault
+      - key: MAX_FILE_SIZE_MB
+        value: 25
+      - key: CORS_ORIGIN
+        value: '*'
+      - key: INITIAL_ADMIN_EMAIL
+        value: admin@kit.edu.pk
+      - key: INITIAL_ADMIN_PASSWORD
+        value: Admin@12345
+      - key: INITIAL_ADMIN_NAME
+        value: KIT System Administrator
+      - key: DATABASE_URL
+        value: file:./dev.db

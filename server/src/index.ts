@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import path from 'path';
+import fs from 'fs';
 import { config } from './config';
 import authRoutes from './routes/authRoutes';
 import academicRoutes from './routes/academicRoutes';
@@ -68,10 +70,19 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// 404 handler
+// 404 handler for API routes
 app.use('/api/*', (req: Request, res: Response) => {
   res.status(404).json({ error: 'Endpoint not found.' });
 });
+
+// Production SPA Static Serving (e.g. Render, Railway, Docker, or Monorepo single-host)
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+  app.get('*', (req: Request, res: Response) => {
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
 
 // Centralized error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
