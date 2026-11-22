@@ -34,8 +34,8 @@ To solve this, I designed and built KIT Helping Hand — a production-grade inst
 This isn't just a static template; it's a fully normalized, secure, and production-tested university solution designed to be presented to institutional leadership and scaled across academic departments.
 
 🔗 Public Links & Verification:
-🌐 Live Web Application: [Your Deployed Live URL, e.g. https://kit-helping-hand.onrender.com]
-📂 GitHub Repository: [Your GitHub Repo URL, e.g. https://github.com/your-username/kit-helping-hand]
+🌐 Live Web Application: https://kit-helping-hand.vercel.app
+📂 GitHub Repository: https://github.com/Surajram7/kit-helping-hand
 🏢 Project Category: Full Stack Web Application / Institutional EdTech Platform
 
 ✨ "Explore KIT Helping Hand and experience the platform yourself!"
