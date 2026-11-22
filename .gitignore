@@ -12,13 +12,11 @@ dist/
 *.local
 
 # Database & Vault files
-*.db
 *.db-journal
-dev.db
-server/dev.db
-storage_vault/
-server/storage_vault/
 *.dump
+!server/prisma/dev.db
+!server/storage_vault/**
+
 
 # Logs & temp files
 npm-debug.log*
