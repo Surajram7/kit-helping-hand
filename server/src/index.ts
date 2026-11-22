@@ -96,8 +96,9 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
-  app.listen(config.port, () => {
+if (process.env.NODE_ENV !== 'test') {
+  const listenPort = process.env.PORT || config.port || 5000;
+  app.listen(listenPort, () => {
     console.log(`====================================================`);
     console.log(`KIT Helping Hand API is running on port ${config.port}`);
     console.log(`Environment: ${config.nodeEnv}`);
